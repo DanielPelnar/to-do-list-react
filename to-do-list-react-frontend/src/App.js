@@ -1,15 +1,25 @@
 import './App.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [tasks, setTasks] = useState([]); // an array of tasks (text)
-  const [text, setText] = useState("");                          
+  const [text, setText] = useState("");  
+  
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("savedTasks"));
+    if (savedTasks) {
+      setTasks(savedTasks);
+    }
+    else {
+      setTasks([]);
+    }
+  }, []); // the function inside is called on the first rendering
 
   return (
     <div className="App">
       <Header />
       <Tasks tasks={tasks} setTasks={setTasks} />
-      <TaskForm setTasks={setTasks} text={text} setText={setText}/>
+      <TaskForm tasks={tasks} setTasks={setTasks} text={text} setText={setText}/>
       <Footer />
     </div>
   );
@@ -34,11 +44,12 @@ function Tasks({ tasks, setTasks }) {
 
 function Task({ text, setTasks, tasks }) {
   function onClickHandler(e) {
-    // console.log(e.target.innerHTML)
+    // delete a task that was clicked on:
     const newTasks = tasks.filter((item) => {
       return item !== e.target.innerHTML;
     })
     setTasks(newTasks);
+    localStorage.setItem("savedTasks", JSON.stringify(newTasks));
   }
 
   return (
@@ -46,15 +57,18 @@ function Task({ text, setTasks, tasks }) {
   );
 }
 
-function TaskForm({ setTasks, text, setText }) {
+function TaskForm({ tasks, setTasks, text, setText }) {
 
   function onChangeHandler(e) {
     setText(e.target.value);
   }
 
   function onSubmitHandler(e) {
+    // Adding a task that was submitted:
     e.preventDefault();
-    setTasks((prev) => [...prev, text]); // with useState, array is considered immutable in React!!!
+    const newTasks = [...tasks, text];
+    setTasks(newTasks); // with useState, array is considered immutable in React!!!
+    localStorage.setItem("savedTasks", JSON.stringify(newTasks));
     e.target.reset();
     setText("");
   }
