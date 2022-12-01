@@ -8,8 +8,9 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Tasks tasks={tasks} />
+      <Tasks tasks={tasks} setTasks={setTasks} />
       <TaskForm setTasks={setTasks} text={text} setText={setText}/>
+      <Footer />
     </div>
   );
 }
@@ -18,22 +19,30 @@ function Header() {
   return <h1>Your Tasks</h1>;
 }
 
-function Tasks({ tasks }) {
+function Tasks({ tasks, setTasks }) {
   return (
     <>
       <ul>
         {tasks.map((task, index) => {
-          return <Task key={index} text={task}/>;
+          return <Task key={index} text={task} setTasks={setTasks} tasks={tasks} />;
         })}
       </ul>
-      {tasks.length === 0 && <strong>You have no tasks.</strong>}
+      {tasks.length === 0 && <strong><p>You have no tasks.</p></strong>}
     </>
   );
 }
 
-function Task({ text }) {
+function Task({ text, setTasks, tasks }) {
+  function onClickHandler(e) {
+    // console.log(e.target.innerHTML)
+    const newTasks = tasks.filter((item) => {
+      return item !== e.target.innerHTML;
+    })
+    setTasks(newTasks);
+  }
+
   return (
-    <li>{text}</li>
+    <li onClick={onClickHandler}>{text}</li>
   );
 }
 
@@ -63,6 +72,10 @@ function TaskForm({ setTasks, text, setText }) {
       />
     </form>
   );
+}
+
+function Footer() {
+  return <p>A task can be deleted by clicking on it.</p>;
 }
 
 
