@@ -60,22 +60,24 @@ function TaskForm({ setTasks, text, setText }) {
   }
   
   return (
-    <form onSubmit={onSubmitHandler}>
+    <form onSubmit={onSubmitHandler} >
       <input 
         type="text" 
         placeholder="Add Task"
         onChange={onChangeHandler}
+        className="form"
       />
       <input
         type="submit" 
         disabled={!text}
+        className="form"
       />
     </form>
   );
 }
 
 function Footer() {
-  return <p>A task can be deleted by clicking on it.</p>;
+  return <p id="footer">A task can be deleted by clicking on it.</p>;
 }
 
 
